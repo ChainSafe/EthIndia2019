@@ -6,7 +6,7 @@ import TextField from '@material-ui/core/TextField';
 import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import NativeSelect from '@material-ui/core/NativeSelect';
-import { addArea, addRestaurant, addItem } from '../../code/functions';
+import { addArea, addRestaurant, addItem, getContract } from '../../code/functions';
 import Loading from "../Loading";
 
 const useStyles = makeStyles(theme => ({
@@ -80,16 +80,36 @@ export default function Checkout(props) {
     setLoading(false);
   };
 
+  React.useEffect(() => {
+    let instance = getContract();
+    instance.events.newRestaurant({}, function (error, event) { console.log(event); })
+      .on('data', function (event) {
+        restaurantAdded(event.returnValues[0]);        
+      })
+      .on('changed', function (event) {
+        console.log("Event changed"); // same results as the optional callback above
+      })
+      .on('error', function (error) {
+        console.log(error);
+        setLoadingR(false);
+      });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const restaurantAdded = async (id) => {
+    console.log("adding items", id);
+    for (let i = 0; i < menu.length; i++) {
+      await addItem(id, menu[i].name, parseInt(menu[i].price));
+    }
+    setLoadingR(false);
+  }
+
   const addRestaurantAll = async () => {
     setLoadingR(true);
     console.log(values);
-    if (values.name && values.fullAddress && values.area && values.fund && menu.length) {
+    if (values.name && values.fullAddress && values.fund && menu.length) {
       await addRestaurant(values.name, values.fullAddress, parseInt(values.area), parseInt(values.fund));
-      for (let i = 0; i < menu.length; i++) {
-        await addItem(0, menu[i].name, parseInt(menu[i].price));
-      }
     }
-    setLoadingR(false);
   }
 
   return (

@@ -44,14 +44,18 @@ export default function NativeSelects(props) {
       ...state,
       [name]: temp,
     });
-    let res = await getRestaurant(0);
+    let res = await searchAreaRestaurant(parseInt(temp));
     if (res) {
-      let restaurant = {
-        name: res[0],
-        address: res["addr"],
-        area: props.areas[temp]
-      }
-      setRestaurants([restaurant]);
+      let tempRes = [];
+      res[0].forEach((resItem, i) => {
+        tempRes.push({
+          id: res[0][i],
+          name: res[1][i],
+          address: res[2][i],
+          area: props.areas[parseInt(temp)]
+        })
+      })
+      setRestaurants([...tempRes]);
     }
   };
 

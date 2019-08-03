@@ -23,6 +23,10 @@ export async function initiateContract() {
 
 const GAS_COST: number = 3000000;
 
+export function getContract () {
+  return contract;
+}
+
 export async function addArea(area: string) {
   try {
     const response = await contract.methods.addArea(area).send({from: account, gas: GAS_COST});
