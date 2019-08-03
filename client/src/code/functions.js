@@ -46,7 +46,6 @@ export async function getArea(areaId: number): string {
 export async function getAreas(): string[]{
   try {
     const result = await contract.methods.getAreas().call();
-    console.log(result);
     return result;
   }catch (e) {
     console.log(e.stack);
@@ -82,6 +81,7 @@ export async function addItem(restuarentId: number, name: string, price: number)
     console.log(e.stack);
   }
 }
+
 export async function getItem(restuarentId: number, itemId: number): number{
   try {
     const result = await contract.methods.getItem(restuarentId, itemId).call();

@@ -9,6 +9,7 @@ import CardContent from '@material-ui/core/CardContent';
 import Restaurants from "./Restaurants";
 import Menu from "./Menu";
 import Checkout from "./Checkout";
+import { searchAreaRestaurant, getRestaurant } from "../../code/functions";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -37,45 +38,27 @@ export default function NativeSelects(props) {
 
   const [checkout, setCheckout] = React.useState(false);
 
-  const handleChange = name => event => {
+  const handleChange = name => async event => {
+    let temp = event.target.value;
     setState({
       ...state,
-      [name]: event.target.value,
+      [name]: temp,
     });
+    let res = await getRestaurant(0);
+    if (res) {
+      let restaurant = {
+        name: res[0],
+        address: res["addr"],
+        area: props.areas[temp]
+      }
+      setRestaurants([restaurant]);
+    }
   };
 
-  const [restaurants, setRestaurants] = React.useState([
-    {
-      name: "Dev Lounge",
-      address: "Brigade millenium, Bangalore",
-      area: "Bangalore"
-    },
-    {
-      name: "Matt World",
-      address: "Brigade millenium, Bangalore",
-      area: "Bangalore"
-    }
-  ]);
+  const [restaurants, setRestaurants] = React.useState([]);
 
   const [restaurant, setRestaurant] = React.useState(undefined);
-  const [menu, setMenu] = React.useState([
-    {
-      name: "idli",
-      price: 20
-    },
-    {
-      name: "Dhosa",
-      price: 15
-    },
-    {
-      name: "Sambar",
-      price: 30
-    },
-    {
-      name: "Chapati",
-      price: 5
-    }
-  ]);
+  const [menu, setMenu] = React.useState([]);
 
   const constructOrder = (len) => {
     let data = [];
@@ -91,7 +74,7 @@ export default function NativeSelects(props) {
       restaurant: {
         name: "Matt over",
         items: [
-          {name: "idli", price: 20, count: 3}
+          { name: "idli", price: 20, count: 3 }
         ]
       },
       amount: 40,
@@ -137,7 +120,7 @@ export default function NativeSelects(props) {
                         <div style={{ flex: 1 }}>
                           <Typography variant="h6">{order.restaurant.name}</Typography>
                           {order.restaurant.items.map((item, i) => (
-                            <div key={i} style={{display: "flex"}}>
+                            <div key={i} style={{ display: "flex" }}>
                               <Typography variant="body2">{item.name}</Typography>
                               <Typography variant="body2">{"$ " + item.price + " x " + item.count}</Typography>
                             </div>

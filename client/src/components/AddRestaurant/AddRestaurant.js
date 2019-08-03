@@ -3,6 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import { Button } from '@material-ui/core';
 import { Typography } from '@material-ui/core';
 import TextField from '@material-ui/core/TextField';
+import FormHelperText from '@material-ui/core/FormHelperText';
 import FormControl from '@material-ui/core/FormControl';
 import NativeSelect from '@material-ui/core/NativeSelect';
 import { addArea, addRestaurant, addItem } from '../../code/functions';
@@ -43,7 +44,7 @@ export default function Checkout(props) {
   const [values, setValues] = React.useState({
     name: '',
     fullAddress: '',
-    area: '',
+    area: 0,
     fund: 0,
   });
 
@@ -81,8 +82,12 @@ export default function Checkout(props) {
 
   const addRestaurantAll = async () => {
     setLoadingR(true);
-    if(values.name && values.fullAddress && values.area && values.fund) {
-      await addRestaurant(values.name, values.fullAddress, values.area)
+    console.log(values);
+    if (values.name && values.fullAddress && values.area && values.fund && menu.length) {
+      await addRestaurant(values.name, values.fullAddress, parseInt(values.area), parseInt(values.fund));
+      for (let i = 0; i < menu.length; i++) {
+        await addItem(0, menu[i].name, parseInt(menu[i].price));
+      }
     }
     setLoadingR(false);
   }
@@ -106,7 +111,7 @@ export default function Checkout(props) {
             multiline
             rows={3}
             className={classes.textField}
-            value={values.name}
+            value={values.fullAddress}
             onChange={handleChange('fullAddress')}
             margin="normal"
           />
@@ -114,11 +119,12 @@ export default function Checkout(props) {
             id="fund"
             label="Initial fund"
             className={classes.textField}
-            value={values.name}
+            value={values.fund}
             onChange={handleChange('fund')}
             margin="normal"
           />
           <FormControl className={classes.formControl}>
+            <FormHelperText>Area to place order in</FormHelperText>
             <NativeSelect
               className={classes.selectEmpty}
               value={values.area}
@@ -157,8 +163,8 @@ export default function Checkout(props) {
           }
           <Button className={classes.iconButton} style={{ marginTop: 20 }} variant="outlined" color="primary" onClick={addToMenu}>+</Button>
         </form>
-        <Button variant="contained" color="primary" style={{ width: 500, height: 40, margin: "40px 0px" }} disabled={loadingR}>
-          {loadingR ? <Loading height={30}/> : "Add restaurant"}
+        <Button variant="contained" color="primary" style={{ width: 500, height: 40, margin: "40px 0px" }} disabled={loadingR} onClick={addRestaurantAll}>
+          {loadingR ? <Loading height={30} /> : "Add restaurant"}
         </Button>
         <div>
           <TextField
