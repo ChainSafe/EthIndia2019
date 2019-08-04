@@ -34,4 +34,12 @@ When the orderer receives the ordered food, he approves food receival, the deliv
 **IF** the restaurant fails to deliver after approving, the deliverer and orderer receives the restaurant commission and their original investments. 
 
 **IF** the delivere fails to deliver after receiving food, the orderer receives his **100%** plus **50%** from deliverer as reimbursement and **restaurant commission** is returned to restaurant.
+========
+Problem It solves:
+* No need of centralised agent.
+* Food Orderer, Deliverer and Restaurant all get more benefits than previous system
+* Ensure Privacy 
 
+========
+Challenges we ran into:
+The main challenge was to design the smart contract for our app, as we have to maintain a lot of issues. We also got stucked calling the methods of the smart contract.
