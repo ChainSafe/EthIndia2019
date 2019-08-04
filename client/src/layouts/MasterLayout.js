@@ -4,6 +4,7 @@ import Header from "../components/Header";
 import Order from "../components/Order/Order";
 import Deliver from "../components/Deliver/Deliver";
 import AddRestaurant from "../components/AddRestaurant/AddRestaurant";
+import RestaurantOrders from "../components/RestaurantOrders/RestaurantOrders";
 import {getAreas} from "../code/functions";
 
 const theme = createMuiTheme({
@@ -54,7 +55,9 @@ export default class MasterLayout extends Component {
             <Order areas={this.state.areas}/>
             : this.state.tab === 1 ?
               <Deliver areas={this.state.areas}/>
-              : <AddRestaurant areas={this.state.areas}/>
+              : this.state.tab === 2 ?
+                <AddRestaurant areas={this.state.areas}/>
+                : <RestaurantOrders />
           }
         </div>
       </MuiThemeProvider>

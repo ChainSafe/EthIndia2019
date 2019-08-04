@@ -43,6 +43,7 @@ export default function ButtonAppBar(props) {
           <Button className={props.tab === 0 ? classes.activeButton : classes.button} color="primary" onClick={() => props.setTab(0)}>Order</Button>
           <Button className={props.tab === 1 ? classes.activeButton : classes.button} color="primary" onClick={() => props.setTab(1)}>Deliver</Button>
           <Button className={props.tab === 2 ? classes.activeButton : classes.button} color="primary" onClick={() => props.setTab(2)}>Add restaurant</Button>
+          <Button className={props.tab === 3 ? classes.activeButton : classes.button} color="primary" onClick={() => props.setTab(3)}>Restaurant Orders</Button>
         </Toolbar>
       </AppBar>
     </div>

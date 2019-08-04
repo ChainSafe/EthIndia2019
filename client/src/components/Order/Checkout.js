@@ -4,6 +4,7 @@ import { red } from '@material-ui/core/colors';
 import { Button, Divider } from '@material-ui/core';
 import Avatar from '@material-ui/core/Avatar';
 import { Typography } from '@material-ui/core';
+import TextField from '@material-ui/core/TextField';
 
 const useStyles = makeStyles(theme => ({
   card: {
@@ -23,6 +24,7 @@ const useStyles = makeStyles(theme => ({
 
 export default function Checkout(props) {
   const classes = useStyles();
+  const [address, setAddress] = React.useState("");
 
   const getTotal = () => {
     let total = 0;
@@ -68,10 +70,26 @@ export default function Checkout(props) {
           <Typography variant="h6">Total : </Typography>
           <Typography style={{ marginLeft: 10 }} variant="h6">$ {getTotal()}</Typography>
         </div>
+
         {getTotal() > 0 ?
           <div style={{ display: "flex" }}>
             <div style={{ flex: 1 }} />
-            <Button variant="contained" color="primary" width={100} style={{ marginTop: 20 }}>Confirm order</Button>
+            <div style={{display: "flex",  flexFlow: "column"}}>
+              <TextField
+                id="address"
+                label="Order address"
+                multiline
+                rows={2}
+                style={{minWidth: 300}}
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                margin="normal"
+              />
+              <Button disabled={props.loading} variant="contained" color="primary" width={100}
+                style={{ marginTop: 20 }} onClick={() => props.confirmOrder(address)}>
+                Confirm order
+                </Button>
+            </div>
           </div> : null
         }
       </div>

@@ -41,6 +41,7 @@ class App extends Component {
       this.setState({ loading: false });
     } catch (error) {
       // Catch any errors for any of the above operations.
+      console.log(error);
       alert(
         `Failed to load web3, accounts, or contract. Check console for details.`,
       );
@@ -54,6 +55,7 @@ class App extends Component {
     }
     return (
       <MasterLayout />
+      // "hello"
     );
   }
 }

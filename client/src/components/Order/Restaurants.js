@@ -27,7 +27,7 @@ export default function NativeSelects(props) {
     <div className={classes.root}>
       {props.restaurants.length ?
         props.restaurants.map((restaurant, i) => (
-          <RestaurantCard key={i} restaurant={restaurant} setRestaurant={props.setRestaurant} />
+          <RestaurantCard key={i} restaurant={restaurant} setRestaurant={props.setRestaurant} index={i} showMenu={props.showMenu}/>
         ))
         : !props.area ? <Typography variant="body2" className={classes.writing}>
           Select area to show restaurants.

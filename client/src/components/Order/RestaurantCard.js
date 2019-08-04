@@ -53,7 +53,7 @@ export default function RecipeReviewCard(props) {
           <FavoriteIcon />
         </IconButton>
         <div style={{flex: 1}}/>
-        <Button color="primary" onClick={() => props.setRestaurant(props.restaurant)}>
+        <Button color="primary" onClick={() => props.showMenu(props.index)}>
           menu
         </Button>
       </CardActions>

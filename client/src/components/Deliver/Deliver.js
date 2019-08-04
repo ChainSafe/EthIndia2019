@@ -7,7 +7,7 @@ import { Typography } from '@material-ui/core';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
 import Button from '@material-ui/core/Button';
-
+import {searchAreaOrder} from "../../code/functions";
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -41,11 +41,27 @@ export default function NativeSelects(props) {
     area: '',
   });
 
-  const handleChange = name => event => {
+  const handleChange = name => async event => {
+    let temp = event.target.value;
     setState({
       ...state,
-      [name]: event.target.value,
+      [name]: temp,
     });
+    console.log(temp);
+    let res = await searchAreaOrder(parseInt(temp));
+    console.log(res);
+    // if (res) {
+    //   let tempRes = [];
+    //   res[0].forEach((resItem, i) => {
+    //     tempRes.push({
+    //       id: res[0][i],
+    //       name: res[1][i],
+    //       address: res[2][i],
+    //       area: props.areas[parseInt(temp)]
+    //     })
+    //   })
+    //   setRestaurants([...tempRes]);
+    // }
   };
 
   const [orders, setOrders] = React.useState([
@@ -135,7 +151,7 @@ export default function NativeSelects(props) {
           >
             <option value="" disabled>Select an area</option>
             {props.areas.map((area, i) => (
-              <option key={i} value={area}>{area}</option>
+              <option key={i} value={i}>{area}</option>
             ))}
           </NativeSelect>
         </FormControl>

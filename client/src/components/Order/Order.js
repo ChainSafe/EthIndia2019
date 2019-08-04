@@ -9,7 +9,9 @@ import CardContent from '@material-ui/core/CardContent';
 import Restaurants from "./Restaurants";
 import Menu from "./Menu";
 import Checkout from "./Checkout";
-import { searchAreaRestaurant, getRestaurant } from "../../code/functions";
+import { searchAreaRestaurant, getRestaurant, getOrder, getItem, placeOrder, getContract } from "../../code/functions";
+
+const delivery_fee = 100; 
 
 const useStyles = makeStyles(theme => ({
   root: {
@@ -59,16 +61,34 @@ export default function NativeSelects(props) {
     }
   };
 
-  const [restaurants, setRestaurants] = React.useState([]);
-
-  const [restaurant, setRestaurant] = React.useState(undefined);
-  const [menu, setMenu] = React.useState([]);
-
+  const [order, setOrder] = React.useState([]);
   const constructOrder = (len) => {
     let data = [];
     for (let i = 0; i < len; i++) data.push(0);
     return data;
   }
+
+  const showMenu = async (index) => {
+    let myRes = await getRestaurant(restaurants[index].id);
+    console.log(myRes);
+    let itemCount = parseInt(myRes.itemCount);
+    let newItems = [];
+    for(let i=0; i<itemCount; i++) {
+      let newItem = await getItem(restaurants[index].id, i);
+      newItems.push({
+        name: newItem.name,
+        price: parseInt(newItem.price)
+      });
+    }
+    setRestaurant(restaurants[index]);
+    setMenu([...newItems]);
+    setOrder([...constructOrder(newItems.length)]);
+  }
+
+  const [restaurants, setRestaurants] = React.useState([]);
+
+  const [restaurant, setRestaurant] = React.useState(undefined);
+  const [menu, setMenu] = React.useState([]);
 
   const [orders, setOrders] = React.useState([
     {
@@ -87,7 +107,49 @@ export default function NativeSelects(props) {
     }
   ])
 
-  const [order, setOrder] = React.useState(constructOrder(menu.length));
+  const [loading, setLoading] = React.useState(false);
+
+  React.useEffect(() => {
+    let instance = getContract();
+    instance.events.newOrder({}, function (error, event) { console.log(event); })
+      .on('data', function (event) {
+        orderProcess(event);        
+      })
+      .on('changed', function (event) {
+        console.log("Event changed"); // same results as the optional callback above
+      })
+      .on('error', function (error) {
+        console.log(error);
+        setLoading(false);
+      });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const orderProcess = async (order) => {
+    console.log(order);
+    let orderItem = await getOrder(parseInt(order.returnValues.orderId));
+    console.log(orderItem);
+    setLoading(false);
+    setCheckout(false);
+    setRestaurant(undefined);
+  }
+
+  const confirmOrder = async (orderAddress) => {
+    let itemsSelected = [];
+    let quantities = [];
+    let total = 0;
+    order.forEach((orderCount, i) => {
+      if(orderCount > 0) {
+        itemsSelected.push(i);
+        quantities.push(orderCount);
+        total += menu[i].price * orderCount;
+      }
+    })
+    total += delivery_fee;
+    setLoading(true);
+    await placeOrder(itemsSelected, quantities, state.area, orderAddress, restaurant.id, total);
+  }
+
 
   const addToOrder = (index) => {
     let orderCopy = order;
@@ -104,13 +166,14 @@ export default function NativeSelects(props) {
   return (
     <div className={classes.root}>
       {checkout ?
-        <Checkout restaurant={restaurant} menu={menu} order={order}
-          setRestaurant={setRestaurant} setCheckout={setCheckout} />
+        <Checkout restaurant={restaurant} menu={menu} order={order} loading={loading}
+          setRestaurant={setRestaurant} setCheckout={setCheckout} confirmOrder={confirmOrder}/>
         :
         restaurant ?
           <Menu restaurant={restaurant} menu={menu}
             setRestaurant={setRestaurant} order={order} addToOrder={addToOrder}
-            removeFromOrder={removeFromOrder} setCheckout={setCheckout} />
+            removeFromOrder={removeFromOrder} setCheckout={setCheckout} 
+            />
           : <div>
             {orders.length ?
               <div style={{ margin: "30px 0px" }}>
@@ -174,7 +237,8 @@ export default function NativeSelects(props) {
                 </NativeSelect>
               </FormControl>
             </div>
-            <Restaurants restaurants={restaurants} setRestaurant={setRestaurant} area={state.area} />
+            <Restaurants restaurants={restaurants} setRestaurant={setRestaurant} area={state.area} 
+              showMenu={showMenu}/>
           </div>
       }
     </div>

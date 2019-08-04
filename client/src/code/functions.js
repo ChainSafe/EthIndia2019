@@ -18,7 +18,7 @@ export async function initiateContract() {
 
   contract = instance;
   account = accounts[0];
-
+  
 }
 
 const GAS_COST: number = 3000000;
