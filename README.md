@@ -33,7 +33,7 @@ When the orderer receives the ordered food, he approves food receival, the deliv
 
 **IF** the restaurant fails to deliver after approving, the deliverer and orderer receives the restaurant commission and their original investments. 
 
-**IF** the delivere fails to deliver after receiving food, the orderer receives his **100%** plus **50%** from deliverer as reimbursement and **restaurant commission** is returned to restaurant.
+**IF** the deliverer fails to deliver after receiving food, the orderer receives his **100%** plus **50%** from deliverer as reimbursement and **restaurant commission** is returned to restaurant.
 ========
 Problem It solves:
 * No need of centralised agent.
